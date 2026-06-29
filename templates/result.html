@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>ResumeIQ Dashboard</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<link rel="stylesheet"
+href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+
+<body>
+
+<div class="dashboard">
+
+    <!-- Header -->
+
+    <div class="top-header">
+
+        <div>
+
+            <h1><i class="bi bi-robot"></i>ResumeIQ</h1>
+
+            <p>Analyze • Improve • Get Hired</p>
+
+        </div>
+
+        <a href="/" class="btn-secondary">
+            Analyze Again
+        </a>
+
+    </div>
+
+
+
+    <!-- ATS Score -->
+
+    <div class="ats-card">
+
+        <p class="score-title">Resume Match Score</p>
+
+        <h1
+
+        {% if percentage >=80 %}
+        style="color:#22c55e;"
+        {% elif percentage >=60 %}
+        style="color:#f59e0b;"
+        {% else %}
+        style="color:#ef4444;"
+        {% endif %}
+
+        >
+
+            {{ percentage }}%
+
+        </h1>
+
+        <div class="progress">
+
+            <div class="progress-bar"
+
+            {% if percentage >=80 %}
+            style="width:{{percentage}}%;background:#22c55e;"
+            {% elif percentage>=60 %}
+            style="width:{{percentage}}%;background:#f59e0b;"
+            {% else %}
+            style="width:{{percentage}}%;background:#ef4444;"
+            {% endif %}
+
+            >
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- Statistics -->
+
+    <div class="stats-grid">
+
+        <div class="stat-card ats">
+
+            <span><i class="bi bi-bar-chart-line-fill"></i></span>
+
+            <h2>{{ percentage }}%</h2>
+
+            <p>ATS Score</p>
+
+        </div>
+
+        <div class="stat-card success">
+
+            <span><i class="bi bi-patch-check-fill"></i></span>
+
+            <h2>{{ matched|length }}</h2>
+
+            <p>Matched Skills</p>
+
+        </div>
+
+        <div class="stat-card danger">
+
+            <span><i class="bi bi-x-octagon-fill"></i></span>
+
+            <h2>{{ missing|length }}</h2>
+
+            <p>Missing Skills</p>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- Feedback -->
+
+    <div class="feedback-box">
+
+        <div class="feedback-top">
+
+            <div>
+
+                <h2><i class="bi bi-clipboard2-check-fill"></i> Resume Feedback</h2>
+
+                <h4>Grade {{ grade }}</h4>
+
+            </div>
+
+            <div class="strength-badge">
+
+                {{ strength }}
+
+            </div>
+
+        </div>
+
+        <p>
+
+            {{ feedback }}
+
+        </p>
+
+    </div>
+
+
+
+    <!-- Skills -->
+
+    <div class="skills-grid">
+
+        <!-- Matched -->
+
+        <div class="glass-card">
+
+            <h2><i class="bi bi-patch-check-fill"></i>Matched Skills</h2>
+
+            <div class="skill-container">
+
+                {% if matched %}
+
+                    {% for skill in matched %}
+
+                    <span class="skill-badge matched-badge">
+
+                        {{ skill }}
+
+                    </span>
+
+                    {% endfor %}
+
+                {% else %}
+
+                    <p class="empty-text">
+
+                        No matched skills found.
+
+                    </p>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+
+
+        <!-- Missing -->
+
+        <div class="glass-card">
+
+            <h2><i class="bi bi-x-octagon-fill"></i>Missing Skills</h2>
+
+            <div class="skill-container">
+
+                {% if missing %}
+
+                    {% for skill in missing %}
+
+                    <span class="skill-badge missing-badge">
+
+                        {{ skill }}
+
+                    </span>
+
+                    {% endfor %}
+
+                {% else %}
+
+                    <p class="empty-text">
+
+                        No missing skills<i class="bi bi-stars text-warning"></i>
+
+
+                    </p>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+        <!-- Suggestions -->
+
+    <div class="glass-card suggestion-card">
+
+        <h2><i class="bi bi-lightbulb-fill"></i> Suggestions</h2>
+
+        <ul class="suggestion-list">
+
+            {% if missing %}
+
+                {% for skill in missing %}
+
+                <li>
+
+                    <span></span>
+
+                    Add <strong>{{ skill }}</strong> by building a small project or completing a course related to it.
+
+                </li>
+
+                {% endfor %}
+
+            {% else %}
+
+                
+
+                    <span><i class="bi bi-stars text-warning"></i>
+</span>
+
+                    Excellent! Your resume already matches this job very well.
+
+                
+
+            {% endif %}
+
+        </ul>
+
+    </div>
+
+
+
+    <!-- Resume Sections -->
+
+    <div class="glass-card section-card">
+
+        <h2><i class="bi bi-file-earmark-text-fill"></i>Resume Section Analysis</h2>
+
+        <div class="section-grid">
+
+            {% for section, status in sections.items() %}
+
+            <div class="section-item">
+
+                {% if status %}
+
+                    <span class="section-ok"><i class="bi bi-patch-check-fill"></i></span>
+
+                {% else %}
+
+                    <span class="section-no"><i class="bi bi-x-octagon-fill"></i></span>
+
+                {% endif %}
+
+                <span>{{ section }}</span>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+
+
+    <!-- Bottom Buttons -->
+
+    <div class="button-group">
+
+        <a href="/download" class="primary-btn">
+
+            <i class="bi bi-download"></i> Download PDF Report
+
+        </a>
+
+        <a href="/" class="secondary-btn">
+
+        <i class="bi bi-arrow-clockwise"></i> Analyze Another Resume
+
+        </a>
+
+    </div>
+
+</div>
+
+</body>
+
+</html>

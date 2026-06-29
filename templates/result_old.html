@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Resume Analysis Report</title>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+</head>
+
+<body>
+
+<div class="result-container">
+
+    <div class="header">
+
+        <h1>🤖 ResumeIQ</h1>
+
+        <p>AI Powered Resume Analysis</p>
+
+    </div>
+
+
+    <div class="score-card">
+
+        <h2>Resume Match Score</h2>
+
+        <h1>{{ percentage }}%</h1>
+
+        <div class="progress">
+
+            <div class="progress-bar"
+                 style="width: {{ percentage }}%;">
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="cards">
+
+        <div class="card matched">
+
+            <h2>✅ Matched Skills</h2>
+
+            <ul>
+
+                {% for skill in matched %}
+
+                <li>{{ skill }}</li>
+
+                {% endfor %}
+
+            </ul>
+
+        </div>
+
+
+        <div class="card missing">
+
+            <h2>❌ Missing Skills</h2>
+
+            <ul>
+
+                {% for skill in missing %}
+
+                <li>{{ skill }}</li>
+
+                {% endfor %}
+
+            </ul>
+
+        </div>
+
+    </div>
+
+
+    <div class="suggestions">
+
+        <h2>💡 Suggestions</h2>
+
+        <ul>
+
+            {% if missing %}
+
+                {% for skill in missing %}
+
+                <li>Learn {{ skill }}</li>
+
+                {% endfor %}
+
+            {% else %}
+
+                <li>Excellent! Your resume matches this role very well.</li>
+
+            {% endif %}
+
+        </ul>
+
+    </div>
+
+    <a href="/" class="btn">
+
+        Analyze Another Resume
+
+    </a>
+
+</div>
+
+</body>
+
+</html>

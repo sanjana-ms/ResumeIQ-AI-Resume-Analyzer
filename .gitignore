@@ -1,0 +1,16 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+uploads/
+Resume_Report.pdf
+
+venv/
+.env
+
+.vscode/
+
+.idea/
+
+.DS_Store
