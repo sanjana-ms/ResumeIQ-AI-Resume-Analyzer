@@ -5,6 +5,8 @@ __pycache__/
 
 uploads/
 Resume_Report.pdf
+resumeiq.db
+
 
 venv/
 .env
