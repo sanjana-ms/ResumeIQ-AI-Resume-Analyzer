@@ -1,59 +1,191 @@
 from reportlab.lib.pagesizes import letter
+from reportlab.lib.colors import HexColor, black, white
 from reportlab.pdfgen import canvas
+from datetime import datetime
+
+print("NEW PDF GENERATOR IS RUNNING")
 
 
-def generate_pdf(filename, percentage, grade, strength,
-                 matched, missing, feedback):
+def generate_pdf(filename, percentage, grade,
+                 matched, missing, feedback, job_description):
 
     c = canvas.Canvas(filename, pagesize=letter)
 
-    y = 750
+    width, height = letter
 
-    c.setFont("Helvetica-Bold", 18)
-    c.drawString(180, y, "Resume Analysis Report")
+    # ======================================
+    # Premium Header
+    # ======================================
 
-    y -= 40
+    c.setFillColor(HexColor("#4F46E5"))
+    c.rect(0, height - 85, width, 85, fill=1, stroke=0)
 
-    c.setFont("Helvetica", 12)
+    c.setFillColor(white)
+    c.setFont("Helvetica-Bold", 30)
+    c.drawString(35, height - 42, "ResumeIQ")
 
-    c.drawString(50, y, f"ATS Score : {percentage}%")
-    y -= 20
+    c.setFont("Helvetica", 13)
+    c.drawString(38, height - 65,
+                 "Professional AI Resume Analysis Report")
 
-    c.drawString(50, y, f"Grade : {grade}")
-    y -= 20
+    c.setStrokeColor(HexColor("#C7D2FE"))
+    c.setLineWidth(2)
+    c.line(35, height - 72, width - 35, height - 72)
 
-    c.drawString(50, y, f"Strength : {strength}")
-    y -= 40
+    today = datetime.now().strftime("%d %B %Y")
 
-    c.setFont("Helvetica-Bold", 14)
-    c.drawString(50, y, "Matched Skills")
-    y -= 20
+    c.setFillColor(HexColor("#374151"))
+    c.setFont("Helvetica-Bold", 11)
+    c.drawRightString(
+        width - 35,
+        height - 102,
+        f"Generated on: {today}"
+    )
 
-    c.setFont("Helvetica", 12)
+    # ======================================
+    # Overall Analysis
+    # ======================================
 
-    for skill in matched:
-        c.drawString(70, y, f"• {skill}")
-        y -= 18
+    y = height - 150
 
-    y -= 20
+    c.setFillColor(black)
+    c.setFont("Helvetica-Bold", 20)
+    c.drawString(40, y, "Overall Analysis")
 
-    c.setFont("Helvetica-Bold", 14)
-    c.drawString(50, y, "Missing Skills")
-    y -= 20
+    y -= 30
 
-    c.setFont("Helvetica", 12)
+    # ======================================
+    # ATS Score Card
+    # ======================================
 
-    for skill in missing:
-        c.drawString(70, y, f"• {skill}")
-        y -= 18
+    c.setFillColor(HexColor("#EEF2FF"))
+    c.roundRect(40, y - 90, 520, 90, 12, fill=1, stroke=0)
 
-    y -= 20
+    c.setStrokeColor(HexColor("#4F46E5"))
+    c.setLineWidth(2)
+    c.roundRect(40, y - 90, 520, 90, 12, fill=0)
 
-    c.setFont("Helvetica-Bold", 14)
-    c.drawString(50, y, "Feedback")
-    y -= 20
+    # Score Color
 
-    c.setFont("Helvetica", 12)
-    c.drawString(50, y, feedback)
+    if percentage >= 80:
+        score_color = HexColor("#22C55E")
+    elif percentage >= 60:
+        score_color = HexColor("#F59E0B")
+    else:
+        score_color = HexColor("#EF4444")
+
+    # Percentage
+    
+
+    c.setFillColor(score_color)
+    c.setFont("Helvetica-Bold", 32)
+    c.drawString(60, y - 42, f"{percentage}%")
+
+    # Score Title
+
+    c.setFillColor(black)
+    c.setFont("Helvetica-Bold", 17)
+    c.drawString(180, y - 22, "ATS Resume Score")
+
+    # Grade
+
+    c.setFont("Helvetica", 13)
+    c.drawString(180, y - 48, f"Grade : {grade}")
+
+    # ======================================
+    # Move Down
+    # ======================================
+
+    y -= 125
+
+    # ======================================
+    # Matched Skills Card
+    # ======================================
+
+    c.setFillColor(HexColor("#ECFDF5"))
+    c.roundRect(35, y - 110, 255, 105, 10, fill=1)
+
+    c.setStrokeColor(HexColor("#22C55E"))
+    c.setLineWidth(2)
+    c.roundRect(35, y - 110, 255, 105, 10, fill=0)
+
+    c.setFillColor(HexColor("#15803D"))
+    c.setFont("Helvetica-Bold", 15)
+    c.drawString(50, y - 20, "✓ Matched Skills")
+
+    c.setFillColor(black)
+    c.setFont("Helvetica", 11)
+
+    skill_y = y - 45
+
+    if matched:
+        for skill in matched[:4]:
+            c.drawString(55, skill_y, f"• {skill}")
+            skill_y -= 16
+    else:
+        c.drawString(55, skill_y, "No matched skills")
+
+    # ======================================
+    # Missing Skills Card
+    # ======================================
+
+    c.setFillColor(HexColor("#FEF2F2"))
+    c.roundRect(315, y - 110, 255, 105, 10, fill=1)
+
+    c.setStrokeColor(HexColor("#EF4444"))
+    c.setLineWidth(2)
+    c.roundRect(315, y - 110, 255, 105, 10, fill=0)
+
+    c.setFillColor(HexColor("#B91C1C"))
+    c.setFont("Helvetica-Bold", 15)
+    c.drawString(330, y - 20, "✗ Missing Skills")
+
+    c.setFillColor(black)
+    c.setFont("Helvetica", 11)
+
+    skill_y = y - 45
+
+    if missing:
+        for skill in missing[:4]:
+            c.drawString(335, skill_y, f"• {skill}")
+            skill_y -= 16
+    else:
+        c.drawString(335, skill_y, "No missing skills")
+
+    # ======================================
+    # AI Feedback
+    # ======================================
+
+    y -= 135
+
+    c.setFillColor(HexColor("#F8FAFC"))
+    c.roundRect(35, y - 80, 540, 80, 10, fill=1)
+
+    c.setStrokeColor(HexColor("#4F46E5"))
+    c.setLineWidth(2)
+    c.roundRect(35, y - 80, 540, 80, 10, fill=0)
+
+    c.setFillColor(black)
+    c.setFont("Helvetica-Bold", 15)
+    c.drawString(50, y - 20, "AI Feedback")
+
+    c.setFont("Helvetica", 11)
+    c.drawString(50, y - 45, feedback)
+
+    # ======================================
+    # Footer
+    # ======================================
+
+    c.setStrokeColor(HexColor("#D1D5DB"))
+    c.line(40, 40, width - 40, 40)
+
+    c.setFillColor(HexColor("#6B7280"))
+    c.setFont("Helvetica-Oblique", 10)
+
+    c.drawCentredString(
+        width / 2,
+        20,
+        "Generated by ResumeIQ AI Resume Analyzer"
+    )
 
     c.save()

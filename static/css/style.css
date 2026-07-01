@@ -2561,3 +2561,6 @@ color : rgb(159, 25, 199);
 .bi-robot{
     font-size:45px;
 }
+html{
+    scroll-behavior:smooth;
+}
