@@ -105,7 +105,7 @@ def logout():
 def upload():
     if "user_id" not in session:
         flash("Account created successfully! Please login", "success")
-        return redirect(url_for(login))
+        return redirect(url_for("login"))
     global analysis_result
 
     resume = request.files["resume"]
